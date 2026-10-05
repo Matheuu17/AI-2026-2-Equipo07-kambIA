@@ -10,6 +10,7 @@ import statistics
 
 from .agentes import COMPRAR, AgenteUtilidad
 from .datos import historial_hasta
+from .simulador import solo_tecnicas
 
 
 def transcribir(wav_bytes):
@@ -71,7 +72,7 @@ def responder(texto, con, df, monto, plazo, aversion_riesgo, tabla=None):
                 f"si vuelve a ese promedio ahorraría unos {ahorro:,.0f} soles. Tiene {dias} días; si llega al último, compre igual.")
 
     if any(p in t for p in ("mejor", "gana", "ganador", "estrategia", "agente")) and tabla is not None:
-        agentes = tabla.iloc[1:-1]
+        agentes = solo_tecnicas(tabla)  # igual que el 🏆 de la app: sin modos base ni Óptimo
         top = agentes.loc[agentes["Ahorro promedio vs base (S/)"].idxmax()]
         seguro = agentes.loc[agentes["Pierde vs base (%)"].idxmin()]
         return (f"En la simulación, {top['Estrategia']} ahorra más en promedio: {top['Ahorro promedio vs base (S/)']:,.0f} "

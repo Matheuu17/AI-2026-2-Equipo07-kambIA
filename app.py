@@ -6,7 +6,7 @@ import streamlit as st
 from kambia.agentes import crear_agentes
 from kambia.datos import crear_base, leer_todo
 from kambia.voz import responder, sintetizar, transcribir
-from kambia.simulador import NOMBRE_OPTIMO, correr_agente, percepciones, simular_lote, tabla_comparativa
+from kambia.simulador import correr_agente, percepciones, simular_lote, solo_tecnicas, tabla_comparativa
 
 st.set_page_config(page_title="KambIA", page_icon="💱", layout="wide")
 
@@ -22,8 +22,8 @@ df = leer_todo(con)
 st.title("💱 KambIA")
 st.markdown(
     "Un importador peruano recibe una factura en dólares y tiene unos días para pagarla. "
-    "**¿Qué día le conviene comprar los dólares?** Comparamos el modo base con cinco agentes "
-    "sobre el histórico real USD/PEN. Métrica: **soles gastados** y **ahorro frente al modo base**."
+    "**¿Qué día le conviene comprar los dólares?** Comparamos dos modos base (comprar el día 1 y comprar al azar) "
+    "con cuatro técnicas del bloque 1 sobre el histórico real USD/PEN. Métrica: **soles gastados** y **ahorro frente al modo base**."
 )
 
 # ---------- parámetros ----------
@@ -54,14 +54,14 @@ with tab_cmp:
         st.warning("El periodo elegido es muy corto para ese plazo. Amplía el periodo.")
         st.stop()
     tabla = tabla_comparativa(corridas, tiempos, agentes)
-    solo_agentes = tabla[tabla["Estrategia"] != NOMBRE_OPTIMO].iloc[1:]
+    solo_agentes = solo_tecnicas(tabla)  # el 🏆 se elige solo entre técnicas, no entre modos base
     ganador = solo_agentes.loc[solo_agentes["Ahorro promedio vs base (S/)"].idxmax()]
     seguro = solo_agentes.loc[solo_agentes["Peor caso vs base (S/)"].idxmax()]
 
     c1, c2, c3 = st.columns(3)
     c1.metric("Facturas simuladas", f"{len(corridas)}", f"US$ {monto:,} a {plazo} días", delta_color="off")
-    c2.metric("🏆 Más ahorro promedio", ganador["Estrategia"], f"S/ {ganador['Ahorro promedio vs base (S/)']:,.2f} por factura")
-    c3.metric("🛡️ Menor pérdida en el peor caso", seguro["Estrategia"], f"S/ {seguro['Peor caso vs base (S/)']:,.2f}")
+    c2.metric("🏆 Técnica con más ahorro promedio", ganador["Estrategia"], f"S/ {ganador['Ahorro promedio vs base (S/)']:,.2f} por factura")
+    c3.metric("🛡️ Técnica con menor pérdida en el peor caso", seguro["Estrategia"], f"S/ {seguro['Peor caso vs base (S/)']:,.2f}")
 
     st.dataframe(
         tabla.style.format({

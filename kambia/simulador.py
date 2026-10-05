@@ -8,6 +8,13 @@ from .agentes import COMPRAR
 from .datos import VENTANA_HISTORIAL, historial_hasta
 
 NOMBRE_OPTIMO = "Óptimo (referencia, ve el futuro)"
+MODOS_BASE = r"^Base|modo base"  # nombres de las estrategias de referencia
+
+
+def solo_tecnicas(tabla):
+    """Filas de la tabla que son técnicas del curso: quita los modos base y el Óptimo."""
+    es_ref = tabla["Estrategia"].str.contains(MODOS_BASE) | (tabla["Estrategia"] == NOMBRE_OPTIMO)
+    return tabla[~es_ref]
 
 
 def percepciones(con, fechas, monto):

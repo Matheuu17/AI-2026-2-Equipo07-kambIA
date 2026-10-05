@@ -15,6 +15,7 @@ COMPRAR, ESPERAR = "COMPRAR", "ESPERAR"
 class Agente:
     nombre = "Agente"
     descripcion = ""
+    es_modo_base = False  # True en las estrategias que sirven de referencia (no son técnicas del curso)
 
     def reiniciar(self):
         """Se llama al empezar cada factura nueva (limpia el estado interno)."""
@@ -26,14 +27,17 @@ class Agente:
 class AgenteBase(Agente):
     nombre = "Base (compra el día 1)"
     descripcion = "Lo que hace hoy el importador: compra los dólares apenas recibe la factura."
+    es_modo_base = True
 
     def actuar(self, p):
         return COMPRAR, "Siempre compra apenas llega la factura."
 
 
 class AgenteAleatorio(Agente):
-    nombre = "Aleatorio"
-    descripcion = "Elige un día al azar dentro del plazo."
+    nombre = "Aleatorio (modo base 2)"
+    descripcion = ("Segundo modo base, como permite la guía (manual, aleatorio o una regla de una línea): "
+                   "elige un día al azar dentro del plazo. Sirve para saber si una técnica aporta algo más que la suerte.")
+    es_modo_base = True
 
     def __init__(self, semilla=7):
         self.rng = random.Random(semilla)
