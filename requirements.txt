@@ -1,0 +1,5 @@
+streamlit>=1.50
+pandas>=2.2
+altair>=5
+SpeechRecognition>=3.10
+gTTS>=2.5
