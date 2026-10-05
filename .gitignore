@@ -2,3 +2,11 @@
 __pycache__/
 *.db
 .DS_Store
+
+# Documentos internos del equipo
+ENTREGA_AVANCE_1.md
+ENTREGA_AVANCE_I.md
+GUION_DEMO.md
+
+# Copias comprimidas del proyecto
+*.zip
